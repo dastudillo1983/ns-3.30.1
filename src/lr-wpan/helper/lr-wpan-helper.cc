@@ -183,7 +183,6 @@ LrWpanHelper::Install (NodeContainer c)
       Ptr<LrWpanNetDevice> netDevice = CreateObject<LrWpanNetDevice> ();
       netDevice->SetChannel (m_channel);
       node->AddDevice (netDevice);
-      netDevice->SetNode (node);
       // \todo add the capability to change short address, extended
       // address and panId. Right now they are hardcoded in LrWpanMac::LrWpanMac ()
       devices.Add (netDevice);

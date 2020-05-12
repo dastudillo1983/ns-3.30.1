@@ -31,8 +31,9 @@ main (int argc, char *argv[])
   cmd.Parse (argc, argv);
   
   Time::SetResolution (Time::NS);
-  LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
-  LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
+  //LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
+  //LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
+  LogComponentEnable ("PointToPointChannel", LOG_LEVEL_LOGIC);
 
   NodeContainer nodes;
   nodes.Create (2);

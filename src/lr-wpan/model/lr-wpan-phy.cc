@@ -1206,7 +1206,7 @@ LrWpanPhy::EndTx (void)
   if (m_currentTxPacket.second == false)
     {
       NS_LOG_DEBUG ("Packet successfully transmitted");
-      m_phyTxEndTrace (m_currentTxPacket.first);
+       (m_currentTxPacket.first);
       if (!m_pdDataConfirmCallback.IsNull ())
         {
           m_pdDataConfirmCallback (IEEE_802_15_4_PHY_SUCCESS);

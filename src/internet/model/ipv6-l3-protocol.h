@@ -448,6 +448,18 @@ public:
    */
   bool IsRegisteredMulticastAddress (Ipv6Address address, uint32_t interface) const;
 
+  /**
+   * \brief Set the If the device is SixLowPan
+   * \param Six Low Pan enabled or not
+   */
+  virtual void SetSixLowPan (bool sendIcmpv6Redirect);
+
+  /**
+   * \brief Get  the If the device is SixLowPan
+   * \return Six Low Pan enabled or not
+   */
+  virtual bool GetSixLowPan () const;
+
 protected:
   /**
    * \brief Dispose object.
@@ -695,6 +707,11 @@ private:
    * \brief List of IPv6 interfaces.
    */
   Ipv6InterfaceList m_interfaces;
+
+  /**
+   * \brief If Six Low PAN protocol is working
+   */
+  bool m_sixlowpan;
 
   /**
    * Container of NetDevice / Interface index associations.

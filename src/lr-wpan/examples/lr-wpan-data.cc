@@ -60,11 +60,13 @@ int main (int argc, char *argv[])
 {
   bool verbose = false;
   bool extended = false;
+  uint16_t n = 2;
 
   CommandLine cmd;
 
   cmd.AddValue ("verbose", "turn on all log components", verbose);
   cmd.AddValue ("extended", "use extended addressing", extended);
+  cmd.AddValue ("nodes", "numero de nodos", n);
 
   cmd.Parse (argc, argv);
 
@@ -86,11 +88,13 @@ int main (int argc, char *argv[])
 
   if (!extended)
     {
+	  NS_LOG_UNCOND ("MAC 16 bits");
       dev0->SetAddress (Mac16Address ("00:01"));
       dev1->SetAddress (Mac16Address ("00:02"));
     }
   else
     {
+	  NS_LOG_UNCOND ("MAC 64 bits");
       Ptr<LrWpanMac> mac0 = dev0->GetMac();
       Ptr<LrWpanMac> mac1 = dev1->GetMac();
       mac0->SetExtendedAddress (Mac64Address ("00:00:00:00:00:00:00:01"));
@@ -123,18 +127,22 @@ int main (int argc, char *argv[])
   sender1Mobility->SetPosition (Vector (0,10,0));
   dev1->GetPhy ()->SetMobility (sender1Mobility);
 
+  // Confirmacion de una solicitud de transmision de datos
   McpsDataConfirmCallback cb0;
   cb0 = MakeCallback (&DataConfirm);
   dev0->GetMac ()->SetMcpsDataConfirmCallback (cb0);
 
+  // Indica la recepcion de los datos desde otro dispositivo
   McpsDataIndicationCallback cb1;
   cb1 = MakeCallback (&DataIndication);
   dev0->GetMac ()->SetMcpsDataIndicationCallback (cb1);
 
+  // Confirmacion de una solicitud de transmision de datos
   McpsDataConfirmCallback cb2;
   cb2 = MakeCallback (&DataConfirm);
   dev1->GetMac ()->SetMcpsDataConfirmCallback (cb2);
 
+  // Indica la recepcion de los datos desde otro dispositivo
   McpsDataIndicationCallback cb3;
   cb3 = MakeCallback (&DataIndication);
   dev1->GetMac ()->SetMcpsDataIndicationCallback (cb3);

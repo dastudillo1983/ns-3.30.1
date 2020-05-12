@@ -79,12 +79,32 @@ public:
    * \param address address to test
    * \returns true if the address matches, false otherwise.
    */
+  bool IsBroadcast ();
+  /**
+   * \param address address to test
+   * \returns true if the address matches, false otherwise.
+   */
   static bool IsMatchingType (const Address &address);
   /**
    * Allocate a new Mac16Address.
    * \returns newly allocated mac16Address
    */
   static Mac16Address Allocate (void);
+
+  /**
+   * Serialize this address to a 4-byte buffer
+   *
+   * \param buf output buffer to which this address gets overwritten with this
+   * Ipv4Address
+   */
+  void Serialize (uint8_t buf[2]) const;
+  /**
+   * \param buf buffer to read address from
+   * \return an Ipv4Address
+   *
+   * The input address is expected to be in network byte order format.
+   */
+  static Mac16Address Deserialize (const uint8_t buf[2]);
 
 private:
   /**

@@ -47,6 +47,10 @@
 
 /// Minimum IPv6 MTU, as defined by \RFC{2460}
 #define IPV6_MIN_MTU 1280
+// Added by Fabian Astudillo
+#define IPV6_MIN_MTU_SIXLOWPAN 81
+//#define IPV6_MIN_MTU 40
+// -------------------------
 
 namespace ns3 {
 
@@ -85,6 +89,12 @@ TypeId Ipv6L3Protocol::GetTypeId ()
                    MakeBooleanAccessor (&Ipv6L3Protocol::SetSendIcmpv6Redirect,
                                         &Ipv6L3Protocol::GetSendIcmpv6Redirect),
                    MakeBooleanChecker ())
+	.AddAttribute ("SixLowPan",
+				   "Mac Device is 802.15.4.",
+				   BooleanValue (false),
+				   MakeBooleanAccessor (&Ipv6L3Protocol::SetSixLowPan,
+                           	   	   	    &Ipv6L3Protocol::GetSixLowPan),
+				   MakeBooleanChecker ())
     .AddAttribute ("StrongEndSystemModel",
                    "Reject packets for an address not configured on the interface they're coming from (RFC1222).",
                    BooleanValue (true),
@@ -122,8 +132,9 @@ TypeId Ipv6L3Protocol::GetTypeId ()
   return tid;
 }
 
+// Modified by Fabian Astudillo
 Ipv6L3Protocol::Ipv6L3Protocol ()
-  : m_nInterfaces (0)
+  : m_sixlowpan(false), m_nInterfaces (0)
 {
   NS_LOG_FUNCTION_NOARGS ();
   m_pmtuCache = CreateObject<Ipv6PmtuCache> ();
@@ -496,7 +507,7 @@ uint16_t Ipv6L3Protocol::GetMtu (uint32_t i) const
   // RFC 1981, if PMTU is disabled, return the minimum MTU
   if (!m_mtuDiscover)
     {
-      return IPV6_MIN_MTU;
+      return m_sixlowpan?IPV6_MIN_MTU_SIXLOWPAN:IPV6_MIN_MTU;
     }
 
   Ptr<Ipv6Interface> interface = GetInterface (i);
@@ -527,7 +538,9 @@ void Ipv6L3Protocol::SetUp (uint32_t i)
   //  octets or greater.  On any link that cannot convey a 1280-octet
   //  packet in one piece, link-specific fragmentation and reassembly must
   //  be provided at a layer below IPv6.
-  if (interface->GetDevice ()->GetMtu () >= 1280)
+  //  Modified by Fabian Astudillo rfc4919 Additional functions
+  // ------------------------------
+  if ((interface->GetDevice ()->GetMtu () >= (m_sixlowpan?IPV6_MIN_MTU_SIXLOWPAN:IPV6_MIN_MTU)) )
     {
       interface->SetUp ();
 
@@ -538,7 +551,7 @@ void Ipv6L3Protocol::SetUp (uint32_t i)
     }
   else
     {
-      NS_LOG_LOGIC ("Interface " << int(i) << " is set to be down for IPv6. Reason: not respecting minimum IPv6 MTU (1280 octets)");
+      NS_LOG_LOGIC ("Interface " << int(i) << " is set to be down for IPv6. Reason: not respecting minimum IPv6 MTU (1280 octets, 81 octets for SixLowPan)");
     }
 }
 
@@ -686,6 +699,18 @@ bool Ipv6L3Protocol::GetSendIcmpv6Redirect () const
 {
   NS_LOG_FUNCTION_NOARGS ();
   return m_sendIcmpv6Redirect;
+}
+
+void Ipv6L3Protocol::SetSixLowPan (bool sixlowpan)
+{
+  NS_LOG_FUNCTION (this << sixlowpan);
+  m_sixlowpan = sixlowpan;
+}
+
+bool Ipv6L3Protocol::GetSixLowPan () const
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  return m_sixlowpan;
 }
 
 void Ipv6L3Protocol::NotifyNewAggregate ()

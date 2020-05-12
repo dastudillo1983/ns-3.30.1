@@ -113,13 +113,16 @@ int main (int argc, char** argv)
   Time interPacketInterval = Seconds (1.);
   Ping6Helper ping6;
 
-  ping6.SetLocal (i1.GetAddress (0, 1));
-  ping6.SetRemote (i2.GetAddress (1, 1));
+  uint8_t origen = 0;
+  uint8_t destino = 1;
+
+  ping6.SetLocal (i1.GetAddress (origen, 1)); // (Nodo, dispositivo)
+  ping6.SetRemote (i2.GetAddress (destino, 1));
 
   ping6.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
   ping6.SetAttribute ("Interval", TimeValue (interPacketInterval));
   ping6.SetAttribute ("PacketSize", UintegerValue (packetSize));
-  ApplicationContainer apps = ping6.Install (net1.Get (0));
+  ApplicationContainer apps = ping6.Install (net1.Get (origen));
 
   apps.Start (Seconds (5.0));
   apps.Stop (Seconds (15.0));

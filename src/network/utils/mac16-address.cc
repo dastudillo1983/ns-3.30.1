@@ -109,6 +109,13 @@ Mac16Address::CopyTo (uint8_t buffer[2]) const
 }
 
 bool
+Mac16Address::IsBroadcast ()
+{
+  NS_LOG_FUNCTION (this);
+  return m_address[0] == 0xFF && m_address[1] == 0xFF;
+}
+
+bool
 Mac16Address::IsMatchingType (const Address &address)
 {
   NS_LOG_FUNCTION (&address);
@@ -146,6 +153,21 @@ Mac16Address::Allocate (void)
   address.m_address[0] = (id >> 8) & 0xff;
   address.m_address[1] = (id >> 0) & 0xff;
   return address;
+}
+
+void
+Mac16Address::Serialize (uint8_t buf[2]) const
+{
+  NS_LOG_FUNCTION (this << &buf);
+  memcpy (&buf, &m_address, sizeof(m_address)); // TODO: probar si esta correcto
+}
+Mac16Address
+Mac16Address::Deserialize (const uint8_t buf[2])
+{
+  NS_LOG_FUNCTION (&buf);
+  Mac16Address mac;
+  memcpy (&mac.m_address, &buf, sizeof(m_address)); // TODO: probar si esta correcto
+  return mac;
 }
 
 uint8_t

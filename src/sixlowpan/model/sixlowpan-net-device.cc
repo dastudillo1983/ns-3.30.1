@@ -128,6 +128,9 @@ void SixLowPanNetDevice::SetNetDevice (Ptr<NetDevice> device)
   if ( m_forceEtherType )
     {
       protocolType = m_etherType;
+      Ptr<Ipv6L3Protocol> ipv6 = m_node->GetObject<Ipv6L3Protocol> ();
+      NS_ASSERT_MSG(ipv6, "You have to install Interner Stack First");
+	  ipv6->SetSixLowPan(true);
     }
   m_node->RegisterProtocolHandler (MakeCallback (&SixLowPanNetDevice::ReceiveFromDevice,
                                                  this),

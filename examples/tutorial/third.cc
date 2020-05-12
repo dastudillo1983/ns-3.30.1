@@ -46,14 +46,18 @@ main (int argc, char *argv[])
   uint32_t nCsma = 3;
   uint32_t nWifi = 3;
   bool tracing = false;
+  uint32_t simtime = 10;
 
   CommandLine cmd;
   cmd.AddValue ("nCsma", "Number of \"extra\" CSMA nodes/devices", nCsma);
   cmd.AddValue ("nWifi", "Number of wifi STA devices", nWifi);
   cmd.AddValue ("verbose", "Tell echo applications to log if true", verbose);
   cmd.AddValue ("tracing", "Enable pcap tracing", tracing);
+  cmd.AddValue ("time", "Simulation time in seconds (default time=10s)", simtime);
 
   cmd.Parse (argc,argv);
+
+  std::cout << "Simulation time: " << simtime << "s" << std::endl;
 
   // The underlying restriction of 18 is due to the grid position
   // allocator's configuration; the grid layout will exceed the
@@ -157,21 +161,21 @@ main (int argc, char *argv[])
 
   ApplicationContainer serverApps = echoServer.Install (csmaNodes.Get (nCsma));
   serverApps.Start (Seconds (1.0));
-  serverApps.Stop (Seconds (10.0));
+  serverApps.Stop (Seconds (simtime));
 
   UdpEchoClientHelper echoClient (csmaInterfaces.GetAddress (nCsma), 9);
-  echoClient.SetAttribute ("MaxPackets", UintegerValue (1));
-  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
+  echoClient.SetAttribute ("MaxPackets", UintegerValue (0xFFFFFFFF));
+  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1)));
   echoClient.SetAttribute ("PacketSize", UintegerValue (1024));
 
   ApplicationContainer clientApps = 
     echoClient.Install (wifiStaNodes.Get (nWifi - 1));
   clientApps.Start (Seconds (2.0));
-  clientApps.Stop (Seconds (10.0));
+  clientApps.Stop (Seconds (simtime));
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-  Simulator::Stop (Seconds (10.0));
+  Simulator::Stop (Seconds (simtime));
 
   if (tracing == true)
     {

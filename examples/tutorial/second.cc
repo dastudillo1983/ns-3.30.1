@@ -49,6 +49,7 @@ main (int argc, char *argv[])
 
   if (verbose)
     {
+	  std::cout << "nCsma: " << nCsma << std::endl ;
       LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
       LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
     }

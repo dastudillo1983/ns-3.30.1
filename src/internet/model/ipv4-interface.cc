@@ -47,7 +47,7 @@ Ipv4Interface::GetTypeId (void)
     .AddAttribute ("ArpCache",
                    "The arp cache for this ipv4 interface",
                    PointerValue (0),
-                   MakePointerAccessor (&Ipv4Interface::SetArpCache, 
+                   MakePointerAccessor (&Ipv4Interface::SetArpCache,
                                         &Ipv4Interface::GetArpCache),
                    MakePointerChecker<ArpCache> ())
   ;
@@ -60,7 +60,7 @@ Ipv4Interface::GetTypeId (void)
  *  with no IP addresses.  Before becoming usable, the user must 
  * invoke SetUp on them once an Ipv4 address and mask have been set.
  */
-Ipv4Interface::Ipv4Interface () 
+Ipv4Interface::Ipv4Interface ()
   : m_ifup (false),
     m_forwarding (true),
     m_metric (1),

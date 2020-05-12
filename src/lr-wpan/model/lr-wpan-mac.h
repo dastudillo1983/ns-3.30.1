@@ -332,7 +332,7 @@ public:
   /**
    * Set the callback for the indication of an incoming data packet.
    * The callback implements MCPS-DATA.indication SAP of IEEE 802.15.4-2006,
-   * section 7.1.1.3.
+   * section 7.1.1.3. of IEEE 802.15.4-2015, section 8.3.3
    *
    * \param c the callback
    */
@@ -341,7 +341,7 @@ public:
   /**
    * Set the callback for the confirmation of a data transmission request.
    * The callback implements MCPS-DATA.confirm SAP of IEEE 802.15.4-2006,
-   * section 7.1.1.2.
+   * section 7.1.1.2. IEEE 802.15.4-2015, section 8.3.2.
    *
    * \param c the callback
    */

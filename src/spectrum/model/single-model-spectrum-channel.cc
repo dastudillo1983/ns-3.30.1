@@ -106,6 +106,9 @@ SingleModelSpectrumChannel::StartTx (Ptr<SpectrumSignalParameters> txParams)
 
   Ptr<MobilityModel> senderMobility = txParams->txPhy->GetMobility ();
 
+  // Added by Fabian Astudillo-Salinas <fabian.astudillos@ucuenca.edu.ec>
+  NS_ASSERT (m_phyList.size() > 0);
+
   for (PhyList::const_iterator rxPhyIterator = m_phyList.begin ();
        rxPhyIterator != m_phyList.end ();
        ++rxPhyIterator)

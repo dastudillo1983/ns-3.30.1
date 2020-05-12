@@ -32,6 +32,7 @@
 #include <ns3/boolean.h>
 #include <ns3/mobility-model.h>
 #include <ns3/packet.h>
+#include "llc-header.h"
 
 
 namespace ns3 {
@@ -375,14 +376,34 @@ LrWpanNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protoco
   // 802.15.4 device does not have an ethertype, and requires specific
   // McpsDataRequest parameters.
   // For further study:  how to support these methods somehow, such as
-  // inventing a fake ethertype and packet tag for McpsDataRequest
+  //   inventing a fake ethertype and packet tag for McpsDataRequest
+  // To solve the problem, we don't have to implement a fake ethertype,
+  //   but it is implemented a llc sublayer. It is used SSAP and DSAP,
+  //   to known the the application at next layer
   NS_LOG_FUNCTION (this << packet << dest << protocolNumber);
 
-  if (packet->GetSize () > GetMtu ())
+  // By default the NetDevice class has protocolNumber as uint16_t, we will not
+  //   change that, but NS3 will give a error if the protocolNumber is bigger
+  //   than 255 (0xFF). The upper layer protocol has to select a SSAP and DSAP
+  //   that not exist
+
+  // Added by Fabian Astudillo
+  if (protocolNumber > 0xFF)
+    protocolNumber = 0x00FF & protocolNumber;
+  // ---------------------------
+  NS_ABORT_IF ( protocolNumber > 0xFF );
+
+  if ((packet->GetSize () - LLC_HEADER_LENGTH ) > GetMtu ())
     {
       NS_LOG_ERROR ("Fragmentation is needed for this packet, drop the packet ");
       return false;
     }
+
+  // Begin: Added by Fabian Astudillo <fabian.astudillos@ucuenca.edu.ec>
+  LlcHeader llc;
+  llc.SetSsap(protocolNumber);
+  packet->AddHeader (llc);
+  // End
 
   McpsDataRequestParams m_mcpsDataRequestParams;
   m_mcpsDataRequestParams.m_dstAddr = Mac16Address::ConvertFrom (dest);
@@ -453,7 +474,19 @@ LrWpanNetDevice::McpsDataIndication (McpsDataIndicationParams params, Ptr<Packet
 {
   NS_LOG_FUNCTION (this);
   // TODO: Use the PromiscReceiveCallback if the MAC is in promiscuous mode.
-  m_receiveCallback (this, pkt, 0, params.m_srcAddr);
+  LlcHeader llc;
+  // m_mac->NotifyRx (packet); // TODO: Implementar
+  pkt->RemoveHeader (llc);
+  // Added by Fabian Astudillo
+  uint16_t ssap=llc.GetSsap();
+
+  // Added by Fabian Astudillo, simple implementation but not real
+  ssap = (0x8600 | ssap);
+  // -------------------------
+
+  m_receiveCallback (this, pkt, ssap, params.m_srcAddr);
+  // Added by Fabian Astudillo
+  //m_receiveCallback (this, pkt, llc.GetSsap(), params.m_srcAddr);
 }
 
 bool
