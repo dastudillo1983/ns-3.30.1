@@ -18,8 +18,7 @@
  * Author:  Tom Henderson (tomhend@u.washington.edu)
  * Modified by Fabian Astudillo-Salinas <fabian.astudillos@ucuenca.edu.ec>
  */
-#include "ns3/sensor-sink.h"
-
+#include "sensor-sink.h"
 #include "ns3/address.h"
 #include "ns3/address-utils.h"
 #include "ns3/log.h"
