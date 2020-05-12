@@ -18,7 +18,7 @@
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
 
-#include "ns3/sensor-sink-helper.h"
+#include "sensor-sink-helper.h"
 #include "ns3/string.h"
 #include "ns3/inet-socket-address.h"
 #include "ns3/names.h"
