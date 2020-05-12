@@ -22,7 +22,7 @@
 // George F. Riley, Georgia Tech, Spring 2007
 // Adapted from ApplicationOnOff in GTNetS.
 
-#include "ns3/sensor-application.h"
+#include "sensor-application.h"
 #include "ns3/log.h"
 #include "ns3/address.h"
 #include "ns3/inet-socket-address.h"
