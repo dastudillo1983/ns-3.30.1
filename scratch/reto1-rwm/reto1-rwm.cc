@@ -94,6 +94,20 @@ public:
   }
 };
 
+
+
+//static void DevTx (std::string context, Ptr<const Packet> paquete, Ptr<SixLowPanNetDevice> slpdev, uint32_t intindex)
+//{
+//	uint32_t size = paquete->GetSize();
+//	std::cout << context << " TX " << size << std::endl;
+//}
+
+static void PhyTxEnd (std::string context, Ptr<const Packet> paquete)
+{
+	uint32_t size = paquete->GetSize();
+	std::cout << context << " TX " << size << std::endl;
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -212,14 +226,15 @@ main (int argc, char *argv[])
   ping6.SetRemote (p2pInterfaces.GetAddress (1, 1));
   std::cout << lrwpanInterfaces.GetAddress (1, 1) << std::endl;
 
-
-
   ping6.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
   ping6.SetAttribute ("Interval", TimeValue (interPacketInterval));
   ping6.SetAttribute ("PacketSize", UintegerValue (packetSize));
   ApplicationContainer apps = ping6.Install (lrWpanNodes.Get (1));
 
   std::cout << lrWpanNodes.Get (1)->GetObject<Ipv6>()  << std::endl;
+
+  Config::Connect ("/NodeList/*/DeviceList/*/$ns3::LrWpanNetDevice/Phy/PhyTxBegin", MakeCallback (&PhyTxEnd));
+  //Config::Connect ("/NodeList/*/DeviceList/*/$ns3::SixLowPanNetDevice/Tx", MakeCallback (&DevTx));
 
   apps.Start (Seconds (1.0));
   apps.Stop (Seconds (10.0));
