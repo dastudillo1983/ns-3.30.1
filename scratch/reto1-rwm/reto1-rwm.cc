@@ -23,11 +23,16 @@
 #include "ns3/internet-module.h"
 #include "ns3/yans-wifi-helper.h"
 #include "ns3/ssid.h"
+#include "ns3/rng-seed-manager.h"
 
 #include "ns3/internet-apps-module.h"
 #include "ns3/sixlowpan-module.h"
 #include "ns3/lr-wpan-module.h"
 #include "ns3/node.h"
+
+#include <math.h>
+#include <iostream>
+#include <fstream>
 
 
 // Default Network Topology
@@ -43,6 +48,8 @@
 using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE ("Reto1-RWM");
+
+std::ofstream output;
 
 /**
  * \class StackHelper
@@ -105,12 +112,16 @@ public:
 static void PhyTxEnd (std::string context, Ptr<const Packet> paquete)
 {
 	uint32_t size = paquete->GetSize();
-	std::cout << context << " TX " << size << std::endl;
+	output << context << ",TX," << std::round(Simulator::Now().GetSeconds()) << "," << size << std::endl;
+	//std::cout << context << " TX " << size << std::endl;
 }
 
 int 
 main (int argc, char *argv[])
 {
+
+  RngSeedManager :: SetSeed (1);
+
   bool verbose = true;
   uint32_t nCsma = 3;
   uint32_t nSensorNodes = 3;
@@ -118,6 +129,7 @@ main (int argc, char *argv[])
   uint32_t simtime = 10;
 
   CommandLine cmd;
+  // Paramtro numsim
   cmd.AddValue ("nCsma", "Number of \"extra\" CSMA nodes/devices", nCsma);
   cmd.AddValue ("nWifi", "Number of wifi STA devices", nSensorNodes);
   cmd.AddValue ("verbose", "Tell echo applications to log if true", verbose);
@@ -125,6 +137,9 @@ main (int argc, char *argv[])
   cmd.AddValue ("time", "Simulation time in seconds (default time=10s)", simtime);
 
   cmd.Parse (argc,argv);
+
+  output.open ("example-1.csv");
+
 
   std::cout << "Simulation time: " << simtime << "s" << std::endl;
 
@@ -249,5 +264,6 @@ main (int argc, char *argv[])
 
   Simulator::Run ();
   Simulator::Destroy ();
+  output.close();
   return 0;
 }
