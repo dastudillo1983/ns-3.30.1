@@ -1,3 +1,6 @@
 [submodule "src/olsr6"]
 	path = src/olsr6
 	url = https://github.com/adeepkit01/OLSR6
+[submodule "src/dsdv6"]
+	path = src/dsdv6
+	url = https://github.com/adeepkit01/DSDV6
