@@ -372,6 +372,7 @@ LrWpanNetDevice::IsPointToPoint (void) const
 bool
 LrWpanNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protocolNumber)
 {
+  NS_LOG_FUNCTION (this << *packet << dest << protocolNumber);
   // This method basically assumes an 802.3-compliant device, but a raw
   // 802.15.4 device does not have an ethertype, and requires specific
   // McpsDataRequest parameters.
@@ -388,8 +389,8 @@ LrWpanNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protoco
   //   that not exist
 
   // Added by Fabian Astudillo
-  if (protocolNumber > 0xFF)
-    protocolNumber = 0x00FF & protocolNumber;
+  //if (protocolNumber > 0xFF)
+  //  protocolNumber = 0x00FF & protocolNumber;
   // ---------------------------
   NS_ABORT_IF ( protocolNumber > 0xFF );
 
@@ -424,6 +425,7 @@ LrWpanNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protoco
 bool
 LrWpanNetDevice::SendFrom (Ptr<Packet> packet, const Address& source, const Address& dest, uint16_t protocolNumber)
 {
+  NS_LOG_FUNCTION (this << *packet << source << dest << protocolNumber);
   NS_ABORT_MSG ("Unsupported");
   // TODO: To support SendFrom, the MACs McpsDataRequest has to use the provided source address, instead of to local one.
   return false;
@@ -472,7 +474,7 @@ LrWpanNetDevice::SetPromiscReceiveCallback (PromiscReceiveCallback cb)
 void
 LrWpanNetDevice::McpsDataIndication (McpsDataIndicationParams params, Ptr<Packet> pkt)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *pkt);
   // TODO: Use the PromiscReceiveCallback if the MAC is in promiscuous mode.
   LlcHeader llc;
   // m_mac->NotifyRx (packet); // TODO: Implementar
@@ -481,7 +483,9 @@ LrWpanNetDevice::McpsDataIndication (McpsDataIndicationParams params, Ptr<Packet
   uint16_t ssap=llc.GetSsap();
 
   // Added by Fabian Astudillo, simple implementation but not real
-  ssap = (0x8600 | ssap);
+  //NS_LOG_DEBUG("SSAP:" << ssap);
+  //if (ssap == 0xDD)
+  //  ssap = (0x8600 | ssap);
   // -------------------------
 
   m_receiveCallback (this, pkt, ssap, params.m_srcAddr);

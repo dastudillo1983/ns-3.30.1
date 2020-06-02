@@ -229,7 +229,7 @@ void Ping6::Send ()
   m_socket->SendTo (p, 0, Inet6SocketAddress (m_peerAddress, 0));
   ++m_sent;
 
-  NS_LOG_INFO ("Sent " << p->GetSize () << " bytes to " << m_peerAddress);
+  NS_LOG_INFO ("Sent " << p->GetSize () << " bytes to " << m_peerAddress << " from " << m_localAddress);
 
   if (m_sent < m_count)
     {

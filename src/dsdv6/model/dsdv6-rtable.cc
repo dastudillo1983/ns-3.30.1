@@ -60,6 +60,7 @@ RoutingTableEntry::RoutingTableEntry (Ptr<NetDevice> dev,
   m_ipv6Route->SetGateway (nextHop);
   m_ipv6Route->SetSource (m_iface.GetAddress ());
   m_ipv6Route->SetOutputDevice (dev);
+  NS_LOG_DEBUG(this << " dst " << dst << " nextHop/Gateway " << nextHop << " Source " << m_iface.GetAddress () << " Dev " << (dev!=0?dev->GetIfIndex():0xFFFFFFFF));
 }
 RoutingTableEntry::~RoutingTableEntry ()
 {

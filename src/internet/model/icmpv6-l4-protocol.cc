@@ -226,44 +226,55 @@ enum IpL4Protocol::RxStatus Icmpv6L4Protocol::Receive (Ptr<Packet> packet, Ipv6H
   switch (type)
     {
     case Icmpv6Header::ICMPV6_ND_ROUTER_SOLICITATION:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ND_ROUTER_SOLICITATION");
       if (ipv6->IsForwarding (ipv6->GetInterfaceForDevice (interface->GetDevice ())))
         {
           HandleRS (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
         }
       break;
     case Icmpv6Header::ICMPV6_ND_ROUTER_ADVERTISEMENT:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ND_ROUTER_ADVERTISEMENT");
       if (!ipv6->IsForwarding (ipv6->GetInterfaceForDevice (interface->GetDevice ())))
         {
           HandleRA (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
         }
       break;
     case Icmpv6Header::ICMPV6_ND_NEIGHBOR_SOLICITATION:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ND_NEIGHBOR_SOLICITATION");
       HandleNS (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ND_NEIGHBOR_ADVERTISEMENT:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ND_NEIGHBOR_ADVERTISEMENT");
       HandleNA (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ND_REDIRECTION:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ND_REDIRECTION");
       HandleRedirection (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ECHO_REQUEST:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ECHO_REQUEST");
       HandleEchoRequest (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ECHO_REPLY:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ECHO_REPLY");
       // EchoReply does not contain any info about L4
       // so we can not forward it up.
       /// \todo implement request / reply consistency check.
       break;
     case Icmpv6Header::ICMPV6_ERROR_DESTINATION_UNREACHABLE:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ERROR_DESTINATION_UNREACHABLE");
       HandleDestinationUnreachable (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ERROR_PACKET_TOO_BIG:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ERROR_PACKET_TOO_BIG");
       HandlePacketTooBig (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ERROR_TIME_EXCEEDED:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ERROR_TIME_EXCEEDED");
       HandleTimeExceeded (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     case Icmpv6Header::ICMPV6_ERROR_PARAMETER_ERROR:
+      NS_LOG_DEBUG("Icmpv6Header::ICMPV6_ERROR_PARAMETER_ERROR");
       HandleParameterError (p, header.GetSourceAddress (), header.GetDestinationAddress (), interface);
       break;
     default:

@@ -514,7 +514,8 @@ bool SixLowPanNetDevice::NeedsArp (void) const
   NS_LOG_FUNCTION (this);
   NS_ASSERT_MSG ( m_netDevice != 0, "Sixlowpan: can't find any lower-layer protocol " << m_netDevice );
 
-  return m_netDevice->NeedsArp ();
+  //return m_netDevice->NeedsArp ();
+  return false;
 }
 
 void SixLowPanNetDevice::SetReceiveCallback (NetDevice::ReceiveCallback cb)

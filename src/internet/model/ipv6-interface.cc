@@ -456,6 +456,10 @@ void Ipv6Interface::Send (Ptr<Packet> p, const Ipv6Header & hdr, Ipv6Address des
           NS_LOG_LOGIC ("Address Resolved.  Send.");
           m_tc->Send (m_device, Create<Ipv6QueueDiscItem> (p, hardwareDestination, Ipv6L3Protocol::PROT_NUMBER, hdr));
         }
+      else
+      {
+    	  NS_LOG_LOGIC ("Address not Resolved.  Not Send.");
+      }
     }
   else
     {

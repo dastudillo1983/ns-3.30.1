@@ -37,12 +37,12 @@
 
 // Default Network Topology
 //
-//   LrWPAN Nodes 10.1.3.0
+//   LrWPAN Nodes 2001:4:/64
 //                 Sink
 //  *    *    *    *
 //  |    |    |    |    10.1.1.0
-// n5   n6   n7   n0 -------------- n1 (server)
-//                   point-to-point
+// ln3  ln2  ln1  ln0 -------------- p2pn1 (server)
+//               p2pn0   point-to-point
 //
 
 using namespace ns3;
@@ -113,12 +113,24 @@ static void PhyTxEnd (std::string context, Ptr<const Packet> paquete)
 {
 	uint32_t size = paquete->GetSize();
 	output << context << ",TX," << std::round(Simulator::Now().GetSeconds()) << "," << size << std::endl;
+	paquete->Print(output);
+	output << std::endl;
 	//std::cout << context << " TX " << size << std::endl;
+}
+
+static void PacketUpdate (std::string path, Ptr<const Packet> packet)
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  uint32_t size = packet->GetSize();
+  output << path << ",AppTX," << std::round(Simulator::Now().GetSeconds()) << "," << size << std::endl;
+  //CounterCalculator<uint32_t>::Update ();
+  // PacketCounterCalculator::Update
 }
 
 int 
 main (int argc, char *argv[])
 {
+
 
   RngSeedManager :: SetSeed (1);
 
@@ -233,13 +245,15 @@ main (int argc, char *argv[])
   Time interPacketInterval = Seconds (1.);
   Ping6Helper ping6;
 
-  ping6.SetLocal (lrwpanInterfaces.GetAddress (1, 1));
+  //ping6.SetLocal (lrwpanInterfaces.GetAddress (1, 1)); // ln1
   std::cout << lrwpanInterfaces.GetAddress (1, 1) << std::endl;
 
-  //ping6.SetRemote (lrwpanInterfaces.GetAddress (2, 1));
+  ping6.SetRemote (lrwpanInterfaces.GetAddress (3, 1));
   //std::cout << lrwpanInterfaces.GetAddress (2, 1) << std::endl;
-  ping6.SetRemote (p2pInterfaces.GetAddress (1, 1));
-  std::cout << lrwpanInterfaces.GetAddress (1, 1) << std::endl;
+  //ping6.SetRemote (p2pInterfaces.GetAddress (1, 1)); // p2pn1
+  std::cout << "IPv6:";
+  lrwpanInterfaces.GetAddress (1, 0).Print(std::cout);
+  std::cout << std::endl;
 
   ping6.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
   ping6.SetAttribute ("Interval", TimeValue (interPacketInterval));
@@ -250,6 +264,7 @@ main (int argc, char *argv[])
 
   Config::Connect ("/NodeList/*/DeviceList/*/$ns3::LrWpanNetDevice/Phy/PhyTxBegin", MakeCallback (&PhyTxEnd));
   //Config::Connect ("/NodeList/*/DeviceList/*/$ns3::SixLowPanNetDevice/Tx", MakeCallback (&DevTx));
+  Config::Connect ("/NodeList/*/ApplicationList/*/$ns3::UdpEchoClient/Tx", MakeCallback (&PacketUpdate));
 
   apps.Start (Seconds (1.0));
   apps.Stop (Seconds (10.0));
@@ -259,6 +274,8 @@ main (int argc, char *argv[])
 //  AsciiTraceHelper ascii;
 //  lrWpanHelper.EnableAsciiAll (ascii.CreateFileStream ("Ping-6LoW-lr-wpan.tr"));
 //  lrWpanHelper.EnablePcapAll (std::string ("Ping-6LoW-lr-wpan"), true);
+
+  Packet::EnablePrinting ();
 
   Simulator::Stop (Seconds (simtime));
 

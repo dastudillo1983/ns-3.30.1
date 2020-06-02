@@ -1084,6 +1084,8 @@ void Ipv6L3Protocol::Receive (Ptr<NetDevice> device, Ptr<const Packet> p, uint16
             {
               Ipv6InterfaceAddress iaddr = GetAddress (j, i);
               Ipv6Address addr = iaddr.GetAddress ();
+
+              NS_LOG_LOGIC ("IPV6-L3-PROTOCOL (hdr.GetDestinationAddress () " << hdr.GetDestinationAddress () << " Destination " << addr << " match)");
               if (addr.IsEqual (hdr.GetDestinationAddress ()))
                 {
                   if (j == interface)
