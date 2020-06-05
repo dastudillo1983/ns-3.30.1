@@ -389,8 +389,8 @@ LrWpanNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protoco
   //   that not exist
 
   // Added by Fabian Astudillo
-  //if (protocolNumber > 0xFF)
-  //  protocolNumber = 0x00FF & protocolNumber;
+  if (protocolNumber > 0xFF)
+    protocolNumber = 0x00FF & protocolNumber;
   // ---------------------------
   NS_ABORT_IF ( protocolNumber > 0xFF );
 
